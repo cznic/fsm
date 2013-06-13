@@ -34,6 +34,7 @@ Referenced from elsewhere:
   [6]: http://en.wikipedia.org/wiki/Janusz_Brzozowski_%28computer_scientist%29
   [7]: http://www.cs.odu.edu/~toida/nerzic/390teched/regular/fa/min-fa.html
   [8]: http://godoc.org/github.com/cznic/golex
+  [9]: http://en.wikipedia.org/wiki/Powerset_construction#Complexity
 
 */
 package fsm
