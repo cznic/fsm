@@ -50,6 +50,18 @@ import (
 // Epsilon is a symbol value representing an ε edge (with no priority).
 const Epsilon = -1
 
+// -------------------------------------------------------------------- Closure
+
+// Closure is a set of states.
+type Closure struct {
+	closure
+}
+
+// NewClosure returns a newly created Closure.
+func NewClosure() Closure {
+	return Closure{closure{}}
+}
+
 type closure map[*State]struct{}
 
 func (c closure) id() string {
@@ -88,18 +100,6 @@ func (c closure) List() (r []*State) {
 	return
 }
 
-// -------------------------------------------------------------------- Closure
-
-// Closure is a set of states.
-type Closure struct {
-	closure
-}
-
-// NewClosure returns a newly created Closure.
-func NewClosure() Closure {
-	return Closure{closure{}}
-}
-
 // ------------------------------------------------------------------------ NFA
 
 // NFA is a nondeterministic finite automaton [2].
@@ -109,7 +109,7 @@ type NFA struct {
 	start *State
 }
 
-// NewNFA return a new, empty NFA.
+// NewNFA returns a new, empty NFA.
 func NewNFA() *NFA {
 	return &NFA{s2i: map[*State]int{}, i2s: map[int]*State{}}
 }
