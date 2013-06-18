@@ -90,6 +90,11 @@ func (c closure) Include(s *State) {
 	c[s] = struct{}{}
 }
 
+// Len returns the number of states in the closure.
+func (c closure) Len() int {
+	return len(c)
+}
+
 // List returns a slice of all states in the closure.
 func (c closure) List() (r []*State) {
 	r = make([]*State, len(c))
@@ -124,6 +129,67 @@ func (n *NFA) id(s *State) int {
 	n.s2i[s] = i
 	n.i2s[i] = s
 	return i
+}
+
+// Equals returns wheter m accepts the same language as n.
+func (n *NFA) Equals(m *NFA) bool {
+	return n.MinimalDFA(false).equals(m.MinimalDFA(false))
+}
+
+// Equals returns wheter a accepts the same language as b. Both a and b must be
+// minimal DFAs and both must have been created using the same value of 'v' in
+// MinimalDFA(v).
+func (a *NFA) equals(b *NFA) bool {
+	nstates := a.Len()
+	if b.Len() != nstates { // must have same # of states
+		return false
+	}
+
+	x := make(map[int]int, nstates) // a.id -> b.id
+	visited := make(map[int]bool, nstates)
+	var f func(*State, *State) bool
+
+	f = func(sa, sb *State) bool {
+		ida := sa.Id()
+		if visited[ida] {
+			return true
+		}
+
+		visited[ida] = true
+		ta, tb := sa.Transitions(), sb.Transitions()
+		if ta.Len() != tb.Len() { // must have same # of edges
+			return false
+		}
+
+		pairs := []struct{ a, b *State }{}
+		for _, sym := range ta.List() {
+			ca := ta.Get(sym)
+			cb := tb.Get(sym)
+			targa, targb := ca.List(), cb.List()
+			nexta, nextb := targa[0], targb[0]
+			nida, nidb := nexta.Id(), nextb.Id()
+			if v, ok := x[nida]; ok {
+				if v != nidb {
+					return false
+				}
+
+				continue
+			}
+
+			x[nida] = nidb
+			pairs = append(pairs, struct{ a, b *State }{nexta, nextb})
+		}
+
+		for _, pair := range pairs {
+			if !f(pair.a, pair.b) {
+				return false
+			}
+		}
+
+		return true
+	}
+
+	return f(a.Start(), b.Start())
 }
 
 // Len returns the number of NFA's states.
@@ -431,6 +497,11 @@ func (t transitions) Delete(sym int) {
 func (t transitions) Get(sym int) (c Closure) {
 	c.closure, _ = t[sym]
 	return
+}
+
+// Len returns the number of edges in transitions.
+func (t transitions) Len() int {
+	return len(t)
 }
 
 // Set sets c as the closure associated with sym.

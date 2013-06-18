@@ -9,6 +9,12 @@ import (
 	"testing"
 )
 
+func TestEpsilon(t *testing.T) {
+	if g, e := Epsilon, -1; g != e {
+		t.Fatal(g, e)
+	}
+}
+
 func ExampleNFA_Powerset() {
 	// See http://en.wikipedia.org/wiki/Powerset_construction#Example
 	n := NewNFA()
@@ -254,10 +260,68 @@ func ExampleNFA_MinimalDFA() {
 	// 	2 -> [4]
 }
 
-func TestEpsilon(t *testing.T) {
-	if g, e := Epsilon, -1; g != e {
-		t.Fatal(g, e)
-	}
+func ExampleNFA_Equals() {
+	// The two NFAs are shown here: http://cs.stackexchange.com/a/12694/989
+	//
+	// Instead of symbols {a,b,c} we will here use {0,1,2}, so the accepted
+	// language is {01,02,12,10,20,21}.
+	n := NewNFA()
+	n0, n1, n2, n3, n4 := n.NewState(), n.NewState(), n.NewState(), n.NewState(), n.NewState()
+	n0.NewEdge(0, n2)
+	n0.NewEdge(0, n3)
+	n0.NewEdge(1, n1)
+	n0.NewEdge(1, n3)
+	n0.NewEdge(2, n1)
+	n0.NewEdge(2, n2)
+	n1.NewEdge(0, n4)
+	n2.NewEdge(1, n4)
+	n3.NewEdge(2, n4)
+	n4.IsAccepting = true
+	m := NewNFA()
+	m0, m1, m2, m3, m4 := m.NewState(), m.NewState(), m.NewState(), m.NewState(), m.NewState()
+	m0.NewEdge(0, m1)
+	m0.NewEdge(1, m2)
+	m0.NewEdge(2, m3)
+	m1.NewEdge(1, m4)
+	m1.NewEdge(2, m4)
+	m2.NewEdge(0, m4)
+	m2.NewEdge(2, m4)
+	m3.NewEdge(0, m4)
+	m3.NewEdge(1, m4)
+	m4.IsAccepting = true
+	fmt.Printf("NFA1\n%v\nNFA2\n%v\nEquals: %t", n, m, n.Equals(m))
+
+	// Output:
+	// NFA1
+	// ->[0]
+	// 	0 -> [2] [3]
+	// 	1 -> [1] [3]
+	// 	2 -> [1] [2]
+	// [1]
+	// 	0 -> [4]
+	// [2]
+	// 	1 -> [4]
+	// [3]
+	// 	2 -> [4]
+	// [[4]]
+	//
+	// NFA2
+	// ->[0]
+	// 	0 -> [1]
+	// 	1 -> [2]
+	// 	2 -> [3]
+	// [1]
+	// 	1 -> [4]
+	// 	2 -> [4]
+	// [2]
+	// 	0 -> [4]
+	// 	2 -> [4]
+	// [3]
+	// 	0 -> [4]
+	// 	1 -> [4]
+	// [[4]]
+	//
+	// Equals: true
 }
 
 //TODO Tests. Even though indirectly tested by the existing client code.
