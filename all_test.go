@@ -324,4 +324,8 @@ func ExampleNFA_Equals() {
 	// Equals: true
 }
 
-//TODO Tests. Even though indirectly tested by the existing client code.
+func TestNil(t *testing.T) {
+	nfa := NewNFA()
+	nfa.NewState()
+	nfa.String()
+}
