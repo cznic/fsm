@@ -1,4 +1,4 @@
-// Copyright 2013 The Go Authors. All rights reserved.
+// Copyright 2014 The fsm Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -139,7 +139,8 @@ func (n *NFA) Equals(m *NFA) bool {
 // Equals returns wheter a accepts the same language as b. Both a and b must be
 // minimal DFAs and both must have been created using the same value of 'v' in
 // MinimalDFA(v).
-func (a *NFA) equals(b *NFA) bool {
+func (n *NFA) equals(b *NFA) bool {
+	a := n
 	nstates := a.Len()
 	if b.Len() != nstates { // must have same # of states
 		return false
