@@ -1,10 +1,5 @@
-fsm
-===
+`github.com/cznic/fsm` has moved to [`modernc.org/fsm`](https://godoc.org/modernc.org/fsm) ([vcs](https://gitlab.com/cznic/fsm)).
 
-Package fsm provides utilities for messing with finite state machines.
+Please update your import paths to `modernc.org/fsm`.
 
-Installation
-
-    $ go get github.com/cznic/fsm
-
-Documentation: [godoc.org/github.com/cznic/fsm](http://godoc.org/github.com/cznic/fsm)
+This repo is now archived.
